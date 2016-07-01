@@ -1,0 +1,5 @@
+﻿  VisualGDB: Sending 6 updated source files to build machine...
+  VisualGDB: Run "make CONFIG=Debug" in directory "/tmp/VisualGDB/d/GitHub/Agilefreaks/gripit-modbus-master/gripit-modbus-master" on pi@192.168.1.23 (SSH)
+  mkdir Debug
+  g++ -ggdb -ffunction-sections -O0  -I/usr/include/modbus -DDEBUG=1  -c gripit-modbus-master.cpp -o Debug/gripit-modbus-master.o -MD -MF Debug/gripit-modbus-master.dep
+  g++ -o Debug/gripit-modbus-master -Wl,-gc-sections    -Wl,--start-group Debug/gripit-modbus-master.o -lmodbus  -Wl,--rpath='$ORIGIN'   -Wl,--end-group
