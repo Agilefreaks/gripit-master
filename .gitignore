@@ -27,3 +27,13 @@
 *.exe
 *.out
 *.app
+
+# VisualGDB
+*.db
+*.rdb
+*.npa
+*.npd
+*.lck
+*.000
+*.001
+*.suo
