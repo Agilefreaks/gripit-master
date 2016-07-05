@@ -1,5 +1,0 @@
-﻿  VisualGDB: Sending 6 updated source files to build machine...
-  VisualGDB: Run "make CONFIG=Release" in directory "/opt/gripit-modbus-master" on pi@192.168.1.23 (SSH)
-  mkdir Release
-  g++ -ggdb -ffunction-sections -O3  -I/usr/include/modbus -DNDEBUG=1 -DRELEASE=1  -c gripit-modbus-master.cpp -o Release/gripit-modbus-master.o -MD -MF Release/gripit-modbus-master.dep
-  g++ -o Release/gripit-modbus-master -Wl,-gc-sections    -Wl,--start-group Release/gripit-modbus-master.o -lmodbus  -Wl,--rpath='$ORIGIN'   -Wl,--end-group
