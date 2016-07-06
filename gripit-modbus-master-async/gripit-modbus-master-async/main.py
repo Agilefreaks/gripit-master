@@ -1,13 +1,14 @@
 from async_rtu import AsyncModbusSerialClient
 from pymodbus.exceptions import ConnectionException, ModbusIOException
 from pymodbus.register_read_message import ReadInputRegistersResponse
-import tornado.ioloop
-import sys
-
 from time import time
 
 from file import create
 from file import write
+
+import RPi.GPIO as GPIO
+import sys
+import tornado.ioloop
 
 client = AsyncModbusSerialClient(
 	method='rtu',
@@ -18,7 +19,7 @@ client = AsyncModbusSerialClient(
 	port='/dev/ttyAMA0'
 )
 
-def read_async(count, start):
+def read_async(should_stop_callback):
 	try:
 		res = client.read_input_registers(address=1, count=4, unit=2)
 	except ConnectionException as ex:
@@ -27,30 +28,20 @@ def read_async(count, start):
 	except ModbusIOException as ex:
 		print("ModbusIOException: %s" % str(ex))
 		sys.exit()
-	res.addCallback(lambda result: async_reply(result, count, start))
+	res.addCallback(lambda result: async_reply(result, should_stop_callback))
 
-def async_reply(result, count, start):
+def async_reply(result, should_stop_callback):
 	if isinstance(result, ReadInputRegistersResponse):
 		write('result.csv', result.registers)
 		print(result.registers)
 	else:
 		print("ERROR: %s" % str(result))
-	if (count < 10):
-		read_async(count + 1, start)
+	if (not should_stop_callback()):
+		read_async(should_stop_callback)
 	else:
-		end = time()
-		print(end-start)
 		tornado.ioloop.IOLoop.instance().stop()
 
-def start():
-	#Save Start Time
-	start = time()
-	
-	# Create CSV FILE
+def start(should_stop_callback):
 	create('result.csv')
-	
-	#Start Reading Registers
-	read_async(0, start)
+	read_async(should_stop_callback)
 	tornado.ioloop.IOLoop.instance().start()
-	
-start()
