@@ -1,9 +1,9 @@
-from async_rtu import AsyncModbusSerialClient
+from modbus_serial_async import AsyncModbusSerialClient
 from pymodbus.exceptions import ConnectionException, ModbusIOException
 from pymodbus.register_read_message import ReadInputRegistersResponse
 from pymodbus.client.sync import ModbusSerialClient  as ModbusClient
 
-import file
+import logger
 import RPi.GPIO as GPIO
 import sys
 import tornado.ioloop
@@ -43,8 +43,6 @@ def async_reply(result, slave_id, should_stop_callback):
 
 def start_async_loop(should_stop_callback):
 	global client
-	global current_file_name
-	file.create(current_file_name)
 	client = AsyncModbusSerialClient(
 		method='rtu',
 		stopbits=1,
@@ -57,8 +55,8 @@ def start_async_loop(should_stop_callback):
 	tornado.ioloop.IOLoop.instance().start()
 		
 def start_sync_loop(should_stop_callback):
-	global client
-	file.create(current_file_name)	
+	global client	
+	global current_file_name
 	client = ModbusClient(
 		method='rtu',
 		stopbits=1,
@@ -72,7 +70,7 @@ def start_sync_loop(should_stop_callback):
 	while not should_stop:
 		for slave_id in range(FIRST_SLAVE_ADDRESS, LAST_SLAVE_ADDRESS + 1):
 			result = client.read_input_registers(address=1, count=8, unit=slave_id)
-			file.write(current_file_name, result.registers, slave_id)
+			logger.write(current_file_name, result.registers, slave_id)
 			should_stop = should_stop_callback()
 			if not should_stop:
 				break
@@ -80,5 +78,6 @@ def start_sync_loop(should_stop_callback):
 def start(should_stop_callback):
 	global current_file_name
 	current_file_name = str(current_milli_time()) + '.csv'
-	start_async_loop(should_stop_callback)
+	logger.create(current_file_name)
+	start_sync_loop(should_stop_callback)
 	

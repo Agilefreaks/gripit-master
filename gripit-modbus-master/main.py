@@ -2,8 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import tornado.ioloop
 import threading
-
-from main import start
+import data_reader
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -28,7 +27,7 @@ def should_stop_reading():
 	
 def start_reading():
 	lightOn()
-	thread = threading.Thread(target=lambda: start(should_stop_reading))
+	thread = threading.Thread(target=lambda: data_reader.start(should_stop_reading))
 	thread.start()
 	print('Started new session')
 
