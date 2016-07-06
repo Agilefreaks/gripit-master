@@ -30,9 +30,11 @@ def start_reading():
 	lightOn()
 	thread = threading.Thread(target=lambda: start(should_stop_reading))
 	thread.start()
+	print('Started new session')
 
 def stop_reading():
 	lightOff()
+	print('Finished session')
 	
 def toggle_read():
 	global IS_READING_DATA
@@ -46,4 +48,4 @@ lightOff()
 GPIO.add_event_detect(BUTTON_PIN, GPIO.FALLING, callback=lambda _: toggle_read(), bouncetime=200)
 
 while True:
-	continue
+	time.sleep(0.5)
