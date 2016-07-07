@@ -12,12 +12,10 @@ import time
 FIRST_SLAVE_ADDRESS = 2
 LAST_SLAVE_ADDRESS = 2
 
-REGISTERS_FIRST_ADDRESS = 1;
-REGISTERS_LAST_ADDRESS = 4;
+FIRST_REGISTER_ADDRESS = 1;
+LAST_REGISTER_ADDRESS = 4;
 
-client = None
-current_file_name = None
-kwargs = {
+MODBUS_CLIENT_KWARGS = {
 	"method": "rtu",
 	"stopbits": 1,
 	"bytesize": 8,
@@ -26,65 +24,76 @@ kwargs = {
 	"port": "/dev/ttyAMA0"
 }
 
-current_milli_time = lambda: int(round(time.time() * 1000))
+client = None
+current_file_name = None
 
 def read_slave_registers(slave_id):
+	global client
 	return client.read_input_registers(
-		address=REGISTERS_FIRST_ADDRESS,
-		count=REGISTERS_LAST_ADDRESS,
+		address=FIRST_REGISTER_ADDRESS,
+		count=LAST_REGISTER_ADDRESS,
 		unit=slave_id
 	)
 
-def read_async(should_stop_callback):
-	global client
+def read_all_slaves(on_slave_read, should_stop_callback):
 	for slave_id in range(FIRST_SLAVE_ADDRESS, LAST_SLAVE_ADDRESS + 1):
 		try:
-			res = read_slave_registers(slave_id)
+			response = read_slave_registers(slave_id)
 		except ConnectionException as ex:
 			print("ConnectionException: %s" % str(ex))
 			sys.exit()
 		except ModbusIOException as ex:
 			print("ModbusIOException: %s" % str(ex))
 			sys.exit()
-		res.addCallback(lambda result: async_reply(result, slave_id, should_stop_callback))
+		on_slave_read(response, slave_id)
+		if should_stop_callback():
+			break
 
-def async_reply(result, slave_id, should_stop_callback):
+def handle_response(response, slave_id):
 	global current_file_name
-	if isinstance(result, ReadInputRegistersResponse):
-		logger.write(current_file_name, result.registers, slave_id)
+	if isinstance(response, ReadInputRegistersResponse):
+		logger.write(current_file_name, response.registers, slave_id)
 	else:
-		print("ERROR: %s" % str(result))
+		print("ERROR: %s" % str(response))
+
+def handle_async_response(async_response, slave_id, should_stop_callback):
+	async_response.addCallback(lambda response: on_async_reply(response, slave_id, should_stop_callback)
+		
+def read_async(should_stop_callback):
+	handle_slave_read = lambda async_response, slave_id: handle_async_response(async_response, slave_id, should_stop_callback))
+	read_all_slaves(handle_slave_read, should_stop_callback)
+
+def continue_or_stop(should_stop_callback)
 	if (should_stop_callback()):
 		tornado.ioloop.IOLoop.instance().stop()
 	else:
 		read_async(should_stop_callback)
 
+def on_async_reply(response, slave_id, should_stop_callback):
+	handle_response(response, slave_id)
+	continue_or_stop(should_stop_callback)
+
 def start_async_loop(should_stop_callback):
 	global client
-	global kwargs
-
-	client = AsyncModbusSerialClient(**kwargs)	
+	client = AsyncModbusSerialClient(**MODBUS_CLIENT_KWARGS)
 	read_async(should_stop_callback)
 	tornado.ioloop.IOLoop.instance().start()
 
+def on_sync_reply(response, slave_id)
+	handle_response(response, slave_id)
+	
+def read_sync(should_stop_callback)
+	handle_slave_read = lambda sync_response, slave_id: on_sync_reply(sync_response, slave_id)
+	while not should_stop_callback():
+		read_all_slaves(handle_slave_read, should_stop_callback)
+		
 def start_sync_loop(should_stop_callback):
-	global client	
-	global current_file_name
-	global kwargs
-
-	client = ModbusClient(**kwargs)
-	client.connect()
-	should_stop = should_stop_callback()
-	while not should_stop:
-		for slave_id in range(FIRST_SLAVE_ADDRESS, LAST_SLAVE_ADDRESS + 1):
-			result = read_slave_registers(slave_id)
-			logger.write(current_file_name, result.registers, slave_id)
-			should_stop = should_stop_callback()
-			if not should_stop:
-				break
-
+	global client
+	client = ModbusClient(**MODBUS_CLIENT_KWARGS)
+	client.connect()	
+	read_sync(should_stop_callback)
+		
 def start(should_stop_callback):
 	global current_file_name
-	current_file_name = str(current_milli_time()) + '.csv'
-	logger.create(current_file_name)
+	current_file_name = logger.create_new_file()
 	start_sync_loop(should_stop_callback)
