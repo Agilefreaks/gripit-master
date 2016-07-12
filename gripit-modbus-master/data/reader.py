@@ -31,7 +31,7 @@ class Reader:
 		self.logger = Logger()
 
 	def should_continue(self):
-		return not self.__is_started
+		return self.__is_started
 
 	def read_slave_registers(self, slave_id):
 		return self.client.read_input_registers(
@@ -78,5 +78,5 @@ class Reader:
 		with self.__is_started_lock: self.__is_started = True
 		threading.Thread(target=self.start_loop).start()
 		
-	def stop(self)
+	def stop(self):
 		with self.__is_started_lock: self.__is_started = False

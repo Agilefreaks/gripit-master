@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import tornado.ioloop
 
-from data import AsyncReader as DataReader
+from data import SyncReader as DataReader
 
 LED_PIN = 2
 BUTTON_PIN = 26
@@ -29,6 +29,9 @@ class App:
 		self.data_reader.stop()
 		print('Finished session')
 		
+	def on_button_pressed(self, button_pin):
+		self.toggle_read()
+
 	def toggle_read(self):
 		self.__is_reading_data = not self.__is_reading_data
 		if(self.__is_reading_data): self.start_reading()
@@ -41,7 +44,7 @@ class App:
 		GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		LightIndicator.turnOff()
 		self.data_reader = DataReader()
-		GPIO.add_event_detect(BUTTON_PIN, GPIO.FALLING, callback=self.toggle_read, bouncetime=500)
+		GPIO.add_event_detect(BUTTON_PIN, GPIO.FALLING, callback=self.on_button_pressed, bouncetime=500)
 		while True: time.sleep(0.5)
 		
 App().start()
