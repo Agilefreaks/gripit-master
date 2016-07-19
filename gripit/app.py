@@ -1,17 +1,16 @@
-import RPi.GPIO as GPIO
 import time
 
-from setup import Setup
-from light_indicator import LightIndicator
-from data import Reader as DataReader
+from gripit.setup import Setup
+from gripit.light_indicator import LightIndicator
+from gripit.data.reader import Reader as DataReader
 
 
 class App:
-    def __init__(self):
+    def __init__(self, GPIO):
         self._is_reading_data = False
+        self.gpio = GPIO()
         self.data_reader = DataReader()
-        self.light_indicator = LightIndicator()
-        self.setup = Setup()
+        self.light_indicator = LightIndicator(GPIO)
 
     def start_reading(self):
         self.light_indicator.turnOn()
@@ -34,6 +33,9 @@ class App:
             self.stop_reading()
 
     def start(self):
-        self.data_reader = DataReader()
-        GPIO.add_event_detect(Setup.BUTTON_PIN, GPIO.FALLING, callback=self.on_button_pressed, bouncetime=500)
-        while True: time.sleep(0.5)
+        self.gpio.add_event_detect(Setup.BUTTON_PIN,
+                                   self.gpio.FALLING,
+                                   callback=self.on_button_pressed,
+                                   bouncetime=500)
+        while True:
+            time.sleep(0.5)
