@@ -1,11 +1,11 @@
 import unittest
 
-from gripit.light_indicator import LightIndicator
+from gripit.services.light_indicator import LightIndicator
 from mock import patch, call
 
 
 class TestLightIndicator(unittest.TestCase):
-    @patch('gripit.gpio.service.GPIO', autospec=True)
+    @patch('gripit.services.gpio.GPIO', autospec=True)
     def setUp(self, MockGPIO):
         self.mock_gpio = MockGPIO()
         self.light_indicator = LightIndicator(MockGPIO)
@@ -15,11 +15,11 @@ class TestLightIndicator(unittest.TestCase):
         self.mock_gpio.reset_mock()
 
     def test_turn_on(self):
-        self.light_indicator.turnOn()
+        self.light_indicator.turn_on()
         self.mock_gpio.output.assert_has_calls([call(self.led_pin, False)])
 
     def test_turn_off(self):
-        self.light_indicator.turnOff()
+        self.light_indicator.turn_off()
         self.mock_gpio.output.assert_has_calls([call(self.led_pin, True)])
 
     def test_start_blinking(self):

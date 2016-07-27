@@ -1,20 +1,20 @@
 import time
 import threading
 
-from gripit.setup import Setup
+from gripit.config import Config
 
 
 class LightIndicator:
     def __init__(self, GPIO):
         self.gpio = GPIO()
-        self.turnOff()
+        self.turn_off()
         self._its_blinking = False
 
-    def turnOn(self):
-        self.gpio.output(Setup.LED_PIN, False)
+    def turn_on(self):
+        self.gpio.output(Config.LED_PIN, False)
 
-    def turnOff(self):
-        self.gpio.output(Setup.LED_PIN, True)
+    def turn_off(self):
+        self.gpio.output(Config.LED_PIN, True)
 
     def start_blinking(self):
         self._its_blinking = True
@@ -29,9 +29,9 @@ class LightIndicator:
     def led_blink(self):
         while True:
             if self.shouldBlink():
-                self.turnOn()
+                self.turn_on()
                 time.sleep(0.25)
-                self.turnOff()
+                self.turn_off()
                 time.sleep(0.25)
             else:
                 break

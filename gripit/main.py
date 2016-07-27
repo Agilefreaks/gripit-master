@@ -1,6 +1,4 @@
-from app import App
-from setup import Setup
-from gpio.service import GPIO
+from gripit.bootstrapper import Bootstrapper
 
-Setup(GPIO).set()
-App(GPIO).start()
+if __name__ == "__main__":
+    Bootstrapper().run()

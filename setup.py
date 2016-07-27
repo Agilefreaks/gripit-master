@@ -11,7 +11,10 @@ setup(
     license='MIT',
     packages=[
         'gripit',
-        'gripit.data'
+        'gripit.data',
+        'gripit.jobs',
+        'gripit.models',
+        'gripit.services'
     ],
     install_requires=[
         'pymodbus >= 1.2.0',
