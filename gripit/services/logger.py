@@ -1,8 +1,8 @@
 import csv
-import time
 import os
 
 from gripit.services.time_service import TimeService
+
 
 class Logger:
     PATH = '/usr/local/gripit/logs/'

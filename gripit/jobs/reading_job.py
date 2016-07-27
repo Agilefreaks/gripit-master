@@ -1,20 +1,15 @@
-from pymodbus.client.sync import ModbusSerialClient
-
+from gripit.config import Config
+from gripit.services.gripit_modbus_client import GripitModbusClient
 from gripit.jobs.job import Job
 from gripit.services.reader import Reader
-from gripit.config import Config
 
 
 class ReadingJob(Job):
-    def __init__(self):
-        self.config = Config()
-        self.client = ModbusSerialClient(**self.config.MODBUS_CLIENT_KWARGS)
-        self.reader = Reader(self.client)
-        self.handlers = []
+    def __init__(self, handler):
+        self.client = GripitModbusClient()
+        self.reader = Reader()
+        self.handler = handler
         self.__is_stopped = False
-
-    def add_handler(self, handler):
-        self.handlers.append(handler)
 
     def is_running(self):
         return not self.__is_stopped
@@ -25,12 +20,9 @@ class ReadingJob(Job):
         self.client.connect()
         iterations = 0
 
-        while self.is_running() and iterations < self.config.max_readings_count:
-            slave_readings = self.reader.read_slaves(self.config.sensors_to_read)
-
-            for handler in self.handlers:
-                handler.handle(slave_readings)
-
+        while self.is_running() and iterations < Config.max_readings_count:
+            slave_readings = self.reader.read_slaves(Config.sensors_to_read)
+            self.handler.handle(slave_readings)
             iterations += 1
 
         self.stop()

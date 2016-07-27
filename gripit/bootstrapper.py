@@ -1,23 +1,24 @@
+import sys
+import getopt
+
 from gripit.app import App
 from gripit.config import Config
 from gripit.services.gpio_configurator import GPIOConfigrator
 from gripit.services.gpio import GPIO
-
-import sys
-import getopt
 
 
 class Bootstrapper:
     def run(self):
         try:
             opts, args = getopt.getopt(sys.argv[1:],
-                                       "ils:r:",
-                                       ["immediately=",
+                                       "ails:r:",
+                                       ["auto_assignment=",
+                                        "immediately=",
                                         "log_data_to_screen=",
                                         "sensors=",
                                         "readings="])
         except getopt.GetoptError:
-            print('Usage: sudo python3 main.py [-s ids] [-r times] [-l] [-i]')
+            print('Usage: sudo python3 main.py [-s ids] [-r times] [-l] [-i] [-a]')
             sys.exit(2)
             return
 
@@ -32,6 +33,8 @@ class Bootstrapper:
                 Config.log_data_to_screen = True
             if opt in ("-i", "--immediately"):
                 Config.start_immediately = True
+            if opt in ("-a", "--auto_assignment"):
+                Config.start_auto_assignment = True
 
         GPIOConfigrator(GPIO).setup()
         App(GPIO).run()

@@ -8,6 +8,22 @@ class Config:
     FIRST_REGISTER_ADDRESS = 1
     LAST_REGISTER_ADDRESS = 4
 
+    NUMBER_OF_SLAVES_ON_BUS = 2
+
+    MIN_SLAVE_ADDRESS = 1
+    MAX_SLAVE_ADDRESS = 32
+
+    SLAVE_ID_REGISTER_ADDRESS = 5
+
+    FORCE_GENERATE_ID_REGISTER_ADDRESS = 6
+    AUTO_ASSIGNMENT_MODE_REGISTER_ADDRESS = 7
+
+    AUTO_ASSIGNMENT_MODE_ON = 1
+    AUTO_ASSIGNMENT_MODE_OFF = 0
+
+    CONFIG_REGISTER_254 = 254
+    CONFIG_REGISTER_255 = 255
+
     MODBUS_CLIENT_KWARGS = {
         "method": "rtu",
         "stopbits": 1,
@@ -23,3 +39,4 @@ class Config:
     max_readings_count = float('inf')
     log_data_to_screen = False
     start_immediately = False
+    start_auto_assignment = False

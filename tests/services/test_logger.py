@@ -1,18 +1,17 @@
 import unittest
 import os
 
-from gripit.services.logger import Logger
-from gripit.services.time_service import TimeService
 from mock import patch
+
+from gripit.services.logger import Logger
 
 
 class TestLogger(unittest.TestCase):
-    @patch('gripit.services.time_service.TimeService', autospec=True)
+    @patch('gripit.services.logger.TimeService', autospec=True)
     def setUp(self, MockTimeService):
-        self.mock_time_service = MockTimeService
+        self.mock_time_service = MockTimeService()
 
         self.logger = Logger()
-        self.logger.time_service = MockTimeService
 
     def test_ensure_directory_exists(self):
         self.logger.ensure_directory_exists()

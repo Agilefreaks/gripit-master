@@ -6,11 +6,11 @@ from mock import patch
 
 
 class TestCsvWriteHandler(unittest.TestCase):
-    @patch('gripit.services.logger.Logger', autospec=True)
+    @patch('gripit.data.csv_write_handler.Logger', autospec=True)
     def setUp(self, MockLogger):
-        self.mock_logger = MockLogger
+        self.mock_logger = MockLogger()
+
         self.csv_write_handler = CsvWriteHandler()
-        self.csv_write_handler.logger = self.mock_logger
 
     def test_handle_logs_readings(self):
         readings = [SlaveReading()]

@@ -1,30 +1,27 @@
 import unittest
-import threading
 import sys
+
+from mock import patch
 
 from gripit.models.slave_reading import SlaveReading
 from pymodbus.exceptions import ConnectionException, ModbusIOException
-from gripit.config import Config
-from mock import patch
 from gripit.services.reader import Reader
 
 
 class TestReader(unittest.TestCase):
-    @patch('gripit.services.time_service.TimeService', autospec=True)
-    @patch('pymodbus.client.sync.ModbusSerialClient', autospec=True)
+    @patch('gripit.services.reader.TimeService', autospec=True)
+    @patch('gripit.services.reader.GripitModbusClient', autospec=True)
     def setUp(self, MockClient, MockTimeService):
-        self.mock_client = MockClient
-        self.mock_time_service = MockTimeService
+        self.mock_client = MockClient()
+        self.mock_time_service = MockTimeService()
 
-        self.reader = Reader(self.mock_client)
-        self.reader.config = Config()
-        self.reader.time_service = self.mock_time_service
+        self.reader = Reader()
 
     def test_read_slave_registers_reads_register_values(self):
         slave_id = 1
         self.mock_client.read_input_registers.return_value = None
 
-        result = self.reader.read_slave(slave_id)
+        self.reader.read_slave(slave_id)
 
         self.mock_client.read_input_registers.assert_called_with(address=1,
                                                                  count=4,
@@ -45,10 +42,7 @@ class TestReader(unittest.TestCase):
         self.assertEqual(result.down, -1)
         self.assertEqual(result.left, -1)
 
-    @patch(
-        'pymodbus.register_read_message.ReadInputRegistersResponse',
-        autospec=True
-     )
+    @patch('pymodbus.register_read_message.ReadInputRegistersResponse', autospec=True)
     def test_read_registers_when_invalid_registers(self, MockResponse):
         slave_id = 1
         MockResponse.registers = [1, 2, 3, 4]

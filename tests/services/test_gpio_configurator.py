@@ -1,8 +1,7 @@
 import unittest
 
 from gripit.services.gpio_configurator import GPIOConfigrator
-from mock import patch, call
-from gripit.services.gpio import GPIO
+from mock import patch
 
 
 class TestGPIOConfigurator(unittest.TestCase):

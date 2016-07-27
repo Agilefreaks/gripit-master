@@ -4,9 +4,6 @@ from gripit.config import Config
 
 
 class TestConfig(unittest.TestCase):
-    def setUp(self):
-        self.config = Config
-
     def test_default_log_data_to_screen_is_false(self):
         self.assertFalse(Config.log_data_to_screen)
 

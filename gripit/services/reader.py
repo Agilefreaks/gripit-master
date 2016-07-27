@@ -1,16 +1,16 @@
-from pymodbus.exceptions import ConnectionException, ModbusIOException
-from gripit.config import Config
-from gripit.models.slave_reading import SlaveReading
-from gripit.services.time_service import TimeService
-
 import sys
+
+from gripit.config import Config
+from pymodbus.exceptions import ConnectionException, ModbusIOException
+from gripit.models.slave_reading import SlaveReading
+from gripit.services.gripit_modbus_client import GripitModbusClient
+from gripit.services.time_service import TimeService
 
 
 class Reader:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self):
+        self.client = GripitModbusClient()
         self.time_service = TimeService()
-        self.config = Config()
 
     def read_slaves(self, slave_ids):
         result = []
@@ -24,8 +24,8 @@ class Reader:
     def read_slave(self, slave_id):
         try:
             response = self.client.read_input_registers(
-                address=self.config.FIRST_REGISTER_ADDRESS,
-                count=self.config.LAST_REGISTER_ADDRESS - self.config.FIRST_REGISTER_ADDRESS + 1,
+                address=Config.FIRST_REGISTER_ADDRESS,
+                count=Config.LAST_REGISTER_ADDRESS - Config.FIRST_REGISTER_ADDRESS + 1,
                 unit=slave_id)
         except ConnectionException as ex:
             print("ConnectionException: %s" % str(ex))
@@ -38,7 +38,6 @@ class Reader:
         return self.__create_slave_reading(slave_id, response)
 
     def __create_slave_reading(self, slave_id, response):
-        reading = None
         if hasattr(response, 'registers'):
             registers = response.registers
             reading = SlaveReading(slave_id, self.time_service.current_milli_time(), *registers)

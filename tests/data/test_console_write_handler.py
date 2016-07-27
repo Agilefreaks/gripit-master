@@ -1,10 +1,10 @@
 import unittest
 
 from mock import patch
+
 from gripit.services.console import Console
 from gripit.models.slave_reading import SlaveReading
 from gripit.data.console_write_handler import ConsoleWriteHandler
-from mock import patch
 
 
 class TestConsoleWriteHandler(unittest.TestCase):
