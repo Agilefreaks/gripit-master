@@ -4,7 +4,7 @@ import os
 
 
 class Logger:
-    PATH = 'logs/'
+    PATH = '/usr/local/gripit/logs/'
     FILE_EXTENSION = '.csv'
 
     def current_milli_time(self):
