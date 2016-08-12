@@ -215,6 +215,7 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 .vscode/*
-.idea/*
+gripit-analyzer/readings/*.csv
+/**/.idea/*
 gripit-modbus-master/logs/*
 *.csv
