@@ -26,7 +26,7 @@ class InteractionManager(ButtonObserver):
 
     def __stop_job(self):
         self.light_indicator.turn_off()
-        self.job_runner.stop(self.__current_job)
+        self.job_runner.stop()
 
     def __get_job_by_press_time(self, press_time):
         return self.job_factory.create_reading_job() \

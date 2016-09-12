@@ -36,7 +36,7 @@ class TestAddressAutoAssignmentJob(unittest.TestCase):
     def test_run_will_connect_to_modbus_client(self):
         self.__run_and_stop_job()
 
-        self.mock_client.connect.assert_called()
+        self.mock_client.connect.assert_called_once()
 
     def test_run_will_write_to_the_auto_assignment_register_with_the_on_word_for_all_slave_addresses(self):
         self.__run_and_stop_job()

@@ -75,7 +75,4 @@ class AddressAutoAssignmentJob(Job):
             self.client.write_register(register_address, value, unit=slave_id)
 
     def __discovered_all_slaves(self):
-        # print(len(self.__id_map.assigned_ids))
-        # print(self.__id_map.assigned_ids)
-        # print(Config.NUMBER_OF_SLAVES_ON_BUS)
         return len(self.__id_map.assigned_ids) > Config.NUMBER_OF_SLAVES_ON_BUS
