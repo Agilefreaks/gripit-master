@@ -1,5 +1,5 @@
 import time
-from _pydecimal import Decimal
+from decimal import Decimal
 
 from gripit.config import Config
 from gripit.exceptions.invalid_observer_exception import InvalidObserverException

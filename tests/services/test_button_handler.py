@@ -1,6 +1,6 @@
 import time
 import unittest
-from _pydecimal import Decimal, ROUND_DOWN, Context
+from decimal import Decimal, ROUND_DOWN, Context
 from threading import Thread
 
 from mock import patch, ANY, PropertyMock
