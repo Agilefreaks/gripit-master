@@ -14,7 +14,9 @@ setup(
         'gripit.data',
         'gripit.jobs',
         'gripit.models',
-        'gripit.services'
+        'gripit.services',
+        'gripit.exceptions',
+        'gripit.core'
     ],
     install_requires=[
         'pymodbus >= 1.2.0',
