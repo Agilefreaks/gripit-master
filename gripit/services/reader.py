@@ -23,7 +23,7 @@ class Reader:
 
     def read_slave(self, slave_id):
         try:
-            response = self.client.read_input_registers(
+            response = self.client.read_holding_registers(
                 address=Config.FIRST_REGISTER_ADDRESS,
                 count=Config.LAST_REGISTER_ADDRESS - Config.FIRST_REGISTER_ADDRESS + 1,
                 unit=slave_id)

@@ -19,17 +19,17 @@ class TestReader(unittest.TestCase):
 
     def test_read_slave_registers_reads_register_values(self):
         slave_id = 1
-        self.mock_client.read_input_registers.return_value = None
+        self.mock_client.read_holding_registers.return_value = None
 
         self.reader.read_slave(slave_id)
 
-        self.mock_client.read_input_registers.assert_called_with(address=1,
+        self.mock_client.read_holding_registers.assert_called_with(address=1,
                                                                  count=4,
                                                                  unit=slave_id)
 
     def test_read_slave_registers_when_client_returns_valid_registers(self):
         slave_id = 1
-        self.mock_client.read_input_registers.return_value = None
+        self.mock_client.read_holding_registers.return_value = None
         self.mock_time_service.current_milli_time.return_value = 42
 
         result = self.reader.read_slave(slave_id)
@@ -46,7 +46,7 @@ class TestReader(unittest.TestCase):
     def test_read_registers_when_invalid_registers(self, MockResponse):
         slave_id = 1
         MockResponse.registers = [1, 2, 3, 4]
-        self.mock_client.read_input_registers.return_value = MockResponse
+        self.mock_client.read_holding_registers.return_value = MockResponse
         self.mock_time_service.current_milli_time.return_value = 42
 
         result = self.reader.read_slave(slave_id)
@@ -62,7 +62,7 @@ class TestReader(unittest.TestCase):
     @patch.object(sys, 'exit')
     def test_read_slave_registers_on_ConnectionException_exits(self, MockExit):
         slave_id = 1
-        self.mock_client.read_input_registers.side_effect = ConnectionException()
+        self.mock_client.read_holding_registers.side_effect = ConnectionException()
 
         self.reader.read_slave(slave_id)
 
@@ -71,7 +71,7 @@ class TestReader(unittest.TestCase):
     @patch.object(sys, 'exit')
     def test_read_slave_registers_on_ModbusIOException_exits(self, MockExit):
         slave_id = 1
-        self.mock_client.read_input_registers.side_effect = ModbusIOException()
+        self.mock_client.read_holding_registers.side_effect = ModbusIOException()
 
         self.reader.read_slave(slave_id)
 
