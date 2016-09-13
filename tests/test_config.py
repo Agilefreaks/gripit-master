@@ -10,5 +10,5 @@ class TestConfig(unittest.TestCase):
     def test_max_readings_is_none(self):
         self.assertEqual(Config.max_readings_count, float('inf'))
 
-    def test_sensors_to_read_contains_5_addresses(self):
-        self.assertEqual(len(Config.sensors_to_read), 5)
+    def test_sensors_to_read_contains_32_addresses(self):
+        self.assertEqual(len(Config.sensors_to_read), 32)

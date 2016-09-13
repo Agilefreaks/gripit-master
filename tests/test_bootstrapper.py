@@ -18,8 +18,8 @@ class TestBootstrapper(unittest.TestCase):
         self.bootstrapper = Bootstrapper()
 
     def tearDown(self):
-        Config.sensors_to_read = range(Config.FIRST_SLAVE_ADDRESS,
-                                       Config.LAST_SLAVE_ADDRESS + 1)
+        Config.sensors_to_read = range(Config.MIN_SLAVE_ADDRESS,
+                                       Config.MAX_SLAVE_ADDRESS + 1)
         Config.max_readings_count = float('inf')
         Config.log_data_to_screen = False
         Config.start_immediately = False
