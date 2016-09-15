@@ -1,8 +1,12 @@
 import unittest
+
 from gripit.services.gripit_modbus_client import GripitModbusClient
 
 
 class TestSingletonModbusClient(unittest.TestCase):
+    def setUp(self):
+        self.modbus_client = GripitModbusClient()
+
     def test_call_always_returns_the_same_instance(self):
         modbus_client1 = GripitModbusClient()
         modbus_client2 = GripitModbusClient()

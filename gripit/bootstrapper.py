@@ -11,14 +11,15 @@ class Bootstrapper:
     def run(self):
         try:
             opts, args = getopt.getopt(sys.argv[1:],
-                                       "ails:r:",
+                                       "ails:r:t:",
                                        ["auto_assignment=",
                                         "immediately=",
                                         "log_data_to_screen=",
                                         "sensors=",
-                                        "readings="])
+                                        "readings=",
+                                        "reading_sleep_time="])
         except getopt.GetoptError:
-            print('Usage: sudo python3 main.py [-s ids] [-r times] [-l] [-i] [-a]')
+            print('Usage: sudo python3 main.py [-s ids] [-r times] [-l] [-i] [-a] [-t]')
             sys.exit(2)
             return
 
@@ -35,6 +36,8 @@ class Bootstrapper:
                 Config.start_immediately = True
             if opt in ("-a", "--auto_assignment"):
                 Config.start_auto_assignment = True
+            if opt in ("-t", "--time"):
+                Config.reading_sleep_time = float(arg)
 
         GPIOConfigrator(GPIO).setup()
         App(GPIO).run()

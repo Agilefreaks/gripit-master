@@ -38,3 +38,4 @@ class Config:
     log_data_to_screen = False
     start_immediately = False
     start_auto_assignment = False
+    reading_sleep_time = 0.0005
